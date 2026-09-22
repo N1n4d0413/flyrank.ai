@@ -1,5 +1,7 @@
 // Import the Express framework.
 const express = require("express");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("../swagger/openapi.json");
 
 // Create our Express application.
 const app = express();
@@ -16,6 +18,13 @@ const PORT = 3000;
 // }
 app.use(express.json());
 
+// --------------------------------------------------
+// Swagger UI
+// --------------------------------------------------
+// Swagger gives us a visual page where we can see
+// and test all the endpoints of our API.
+
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // --------------------------------------------------
 // Temporary in-memory data
