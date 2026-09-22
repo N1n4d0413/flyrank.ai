@@ -143,7 +143,7 @@ Swagger UI allows all API endpoints to be tested directly from the browser.
 
 ### Swagger Screenshot
 
-![Swagger UI](screenshots/swagger.png)
+![Swagger UI](week%202/CRUD%20api/swagger/swagger.png)
 
 ## Data Storage
 
