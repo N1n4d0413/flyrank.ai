@@ -114,6 +114,49 @@ app.get("/tasks/:id", (req, res) => {
 });
 
 
+// --------------------------------------------------
+// POST /tasks
+// --------------------------------------------------
+// Creates a new task.
+//
+// The client should send:
+// {
+//     "title": "Buy milk"
+// }
+
+app.post("/tasks", (req, res) => {
+
+    // Get the title sent by the client.
+    const title = req.body.title;
+
+    // Validate the title before creating the task.
+    // The server should never blindly trust data
+    // coming from the client.
+    if (!title || title.trim() === "") {
+        return res.status(400).json({
+            error: "Task title is required"
+        });
+    }
+
+    // Find the highest existing ID.
+    // Then add 1 to create the next ID.
+    const newId = tasks.length > 0
+        ? Math.max(...tasks.map((task) => task.id)) + 1
+        : 1;
+
+    // Create the new task.
+    const newTask = {
+        id: newId,
+        title: title.trim(),
+        done: false
+    };
+
+    // Add the new task to our in-memory list.
+    tasks.push(newTask);
+
+    // 201 means the resource was successfully created.
+    res.status(201).json(newTask);
+});
 
 // --------------------------------------------------
 // Start the server
