@@ -224,7 +224,36 @@ app.put("/tasks/:id", (req, res) => {
     res.json(task);
 });
 
+// --------------------------------------------------
+// DELETE /tasks/:id
+// --------------------------------------------------
+// Deletes an existing task.
+//
+// Example:
+// DELETE /tasks/2
 
+app.delete("/tasks/:id", (req, res) => {
+
+    // Get the task ID from the URL.
+    const taskId = Number(req.params.id);
+
+    // Find the position of the task inside the array.
+    const taskIndex = tasks.findIndex((task) => task.id === taskId);
+
+    // If the task doesn't exist, return 404.
+    if (taskIndex === -1) {
+        return res.status(404).json({
+            error: `Task ${taskId} not found`
+        });
+    }
+
+    // Remove one task from the array.
+    tasks.splice(taskIndex, 1);
+
+    // 204 means the deletion was successful
+    // and there is no response body to send.
+    res.status(204).send();
+});
 
 // --------------------------------------------------
 // Start the server
