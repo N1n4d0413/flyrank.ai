@@ -1,20 +1,55 @@
 // Import the Express framework.
-// Express helps us create a web server and define API endpoints.
 const express = require("express");
 
-// Create an Express application.
-// The "app" object will be used to configure our server.
+// Create our Express application.
 const app = express();
 
-// Port where our server will listen for requests.
+// The port where our server will run.
 const PORT = 3000;
+
+// This allows Express to understand JSON data
+// sent by the client in a request body.
+//
+// Example:
+// {
+//     "title": "Buy milk"
+// }
+app.use(express.json());
+
+
+// --------------------------------------------------
+// Temporary in-memory data
+// --------------------------------------------------
+// For Week 2, we are NOT using a database.
+// These tasks are stored inside this JavaScript array.
+//
+// Important:
+// When the server is restarted, these tasks will
+// reset because they only exist in memory.
+
+const tasks = [
+    {
+        id: 1,
+        title: "Learn Express",
+        done: false
+    },
+    {
+        id: 2,
+        title: "Build a CRUD API",
+        done: false
+    },
+    {
+        id: 3,
+        title: "Test the API",
+        done: false
+    }
+];
 
 
 // --------------------------------------------------
 // GET /
 // --------------------------------------------------
-// This is the main/root endpoint of our API.
-// It gives basic information about what our API provides.
+// Returns basic information about our API.
 
 app.get("/", (req, res) => {
     res.json({
@@ -28,8 +63,7 @@ app.get("/", (req, res) => {
 // --------------------------------------------------
 // GET /health
 // --------------------------------------------------
-// This endpoint is used to check whether our server
-// is running correctly.
+// Used to check whether our server is running.
 
 app.get("/health", (req, res) => {
     res.json({
@@ -38,9 +72,53 @@ app.get("/health", (req, res) => {
 });
 
 
-// Start the server.
-// Once the server starts successfully, this message will appear
-// in the terminal.
+// --------------------------------------------------
+// GET /tasks
+// --------------------------------------------------
+// Returns all the tasks currently stored in memory.
+
+app.get("/tasks", (req, res) => {
+    res.json(tasks);
+});
+
+
+// --------------------------------------------------
+// GET /tasks/:id
+// --------------------------------------------------
+// Returns one specific task.
+//
+// Example:
+// GET /tasks/2
+//
+// Here, "2" is the ID we want to find.
+
+app.get("/tasks/:id", (req, res) => {
+
+    // URL parameters are received as strings.
+    // Convert the ID to a number so we can compare it
+    // with the numeric IDs in our task list.
+    const taskId = Number(req.params.id);
+
+    // Search the tasks array for a matching ID.
+    const task = tasks.find((task) => task.id === taskId);
+
+    // If no task was found, return a 404 error.
+    if (!task) {
+        return res.status(404).json({
+            error: `Task ${taskId} not found`
+        });
+    }
+
+    // If the task exists, return it.
+    res.json(task);
+});
+
+
+
+// --------------------------------------------------
+// Start the server
+// --------------------------------------------------
+
 app.listen(PORT, () => {
     console.log(`Task API is running on http://localhost:${PORT}`);
 });
