@@ -159,6 +159,74 @@ app.post("/tasks", (req, res) => {
 });
 
 // --------------------------------------------------
+// PUT /tasks/:id
+// --------------------------------------------------
+// Updates an existing task.
+//
+// The client can send:
+// {
+//     "title": "Learn Express properly",
+//     "done": true
+// }
+//
+// We will allow the client to update the title,
+// the done status, or both.
+
+app.put("/tasks/:id", (req, res) => {
+
+    // Get the task ID from the URL.
+    // URL parameters are strings, so convert it to a number.
+    const taskId = Number(req.params.id);
+
+    // Find the task inside our array.
+    const task = tasks.find((task) => task.id === taskId);
+
+    // If the task doesn't exist, return 404.
+    if (!task) {
+        return res.status(404).json({
+            error: `Task ${taskId} not found`
+        });
+    }
+
+    // Get the values sent by the client.
+    const { title, done } = req.body;
+
+    // Make sure the client actually sent something
+    // that we can update.
+    if (
+        (title === undefined || title === "") &&
+        done === undefined
+    ) {
+        return res.status(400).json({
+            error: "Title or done is required"
+        });
+    }
+
+    // If a title was provided, make sure it isn't
+    // just empty spaces.
+    if (title !== undefined && title.trim() === "") {
+        return res.status(400).json({
+            error: "Title cannot be empty"
+        });
+    }
+
+    // Update the title only if the client provided one.
+    if (title !== undefined) {
+        task.title = title.trim();
+    }
+
+    // Update the done status only if the client provided it.
+    if (done !== undefined) {
+        task.done = done;
+    }
+
+    // Return the updated task.
+    res.json(task);
+});
+
+
+
+// --------------------------------------------------
 // Start the server
 // --------------------------------------------------
 
